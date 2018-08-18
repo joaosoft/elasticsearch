@@ -37,7 +37,7 @@ func WithLogLevel(level logger.Level) ElasticOption {
 	}
 }
 
-// WithConfiguration ...
+// WithManager ...
 func WithManager(mgr *manager.Manager) ElasticOption {
 	return func(client *Elastic) {
 		client.pm = mgr
