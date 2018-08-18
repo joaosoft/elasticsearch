@@ -12,17 +12,18 @@ import (
 type Elastic struct {
 	config        *ElasticConfig
 	isLogExternal bool
+	pm            *manager.Manager
 	mux           sync.Mutex
 }
 
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
-	pm := manager.NewManager(manager.WithRunInBackground(false))
-
-	elastic := &Elastic{}
+	elastic := &Elastic{
+		pm: manager.NewManager(manager.WithRunInBackground(false)),
+	}
 
 	if elastic.isLogExternal {
-		pm.Reconfigure(manager.WithLogger(log))
+		elastic.pm.Reconfigure(manager.WithLogger(log))
 	}
 
 	// load configuration File
@@ -30,7 +31,7 @@ func NewElastic(options ...ElasticOption) *Elastic {
 	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
 	} else {
-		pm.AddConfig("config_app", simpleConfig)
+		elastic.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(appConfig.Elastic.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))

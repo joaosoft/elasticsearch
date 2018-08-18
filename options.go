@@ -2,6 +2,7 @@ package elastic
 
 import (
 	logger "github.com/joaosoft/logger"
+	"github.com/joaosoft/manager"
 )
 
 // ElasticOption ...
@@ -33,5 +34,12 @@ func WithLogger(logger logger.ILogger) ElasticOption {
 func WithLogLevel(level logger.Level) ElasticOption {
 	return func(elastic *Elastic) {
 		log.SetLevel(level)
+	}
+}
+
+// WithConfiguration ...
+func WithManager(mgr *manager.Manager) ElasticOption {
+	return func(client *Elastic) {
+		client.pm = mgr
 	}
 }
