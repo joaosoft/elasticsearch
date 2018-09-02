@@ -83,3 +83,7 @@ func (e *Elastic) UpdateIndex() *CreateIndexService {
 func (e *Elastic) DeleteIndex() *DeleteIndexService {
 	return NewDeleteIndexService(e)
 }
+
+func (e *Elastic) Bulk() *BulkService {
+	return NewBulkService(e)
+}

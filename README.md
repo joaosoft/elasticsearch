@@ -7,6 +7,8 @@ A simple and fast elastic client.
 > Create / Exists / Delete index (with or without mapping)
 > Create / Update / Delete documents
 > Search documents
+> Bulk index/create/update/delete
+
 * The search can be done with a template to be faster than other complicated frameworks.
 
 ###### If i miss something or you have something interesting, please be part of this project. Let me know! My contact is at the end.
