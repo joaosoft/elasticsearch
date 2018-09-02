@@ -121,7 +121,8 @@ func (e *BulkService) Body(body interface{}) *BulkService {
 }
 
 func (e *BulkService) Upsert() error {
-	e.buffer.WriteString(fmt.Sprintf(BulkUpsertHeader, e.index))
+	e.buffer.WriteString(fmt.Sprintf(BulkUpsertHeader, e.index, e.typ, e.id))
+	e.buffer.WriteString("\n")
 	e.buffer.Write(e.body)
 	e.buffer.WriteString("\n")
 
@@ -129,7 +130,8 @@ func (e *BulkService) Upsert() error {
 }
 
 func (e *BulkService) Create() error {
-	e.buffer.WriteString(fmt.Sprintf(BulkCreateHeader, e.index))
+	e.buffer.WriteString(fmt.Sprintf(BulkCreateHeader, e.index, e.typ, e.id))
+	e.buffer.WriteString("\n")
 	e.buffer.Write(e.body)
 	e.buffer.WriteString("\n")
 
@@ -137,7 +139,8 @@ func (e *BulkService) Create() error {
 }
 
 func (e *BulkService) Update() error {
-	e.buffer.WriteString(fmt.Sprintf(BulkUpdateHeader, e.index))
+	e.buffer.WriteString(fmt.Sprintf(BulkUpdateHeader, e.index, e.typ, e.id))
+	e.buffer.WriteString("\n")
 	e.buffer.Write(e.body)
 	e.buffer.WriteString("\n")
 
@@ -145,7 +148,7 @@ func (e *BulkService) Update() error {
 }
 
 func (e *BulkService) Delete() error {
-	e.buffer.WriteString(fmt.Sprintf(BulkDeleteHeader, e.index))
+	e.buffer.WriteString(fmt.Sprintf(BulkDeleteHeader, e.index, e.typ, e.id))
 	e.buffer.WriteString("\n")
 
 	return nil
@@ -153,7 +156,13 @@ func (e *BulkService) Delete() error {
 
 func (e *BulkService) Execute() (*BulkResponse, error) {
 
+	// when three is nothing to process
+	if e.buffer.Len() == 0 {
+		return nil, nil
+	}
+
 	// create data on elastic
+	fmt.Println(e.buffer.String())
 	request, err := http.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), e.buffer)
 	if err != nil {
 		return nil, errors.New("0", err)
@@ -170,6 +179,8 @@ func (e *BulkService) Execute() (*BulkResponse, error) {
 	if err != nil {
 		return nil, errors.New("0", err)
 	}
+
+	fmt.Println(string(body))
 
 	elasticResponse := BulkResponse{}
 	if err = json.Unmarshal(body, &elasticResponse); err != nil {

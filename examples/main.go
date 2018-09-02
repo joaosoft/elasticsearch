@@ -43,8 +43,12 @@ func main() {
 
 	// index exists
 	existsIndex("persons")
-	existsIndex("bananas	")
+	existsIndex("bananas")
 
 	// index delete
 	deleteIndex()
+
+	// bulk
+	bulkCreate()
+	bulkDelete()
 }
