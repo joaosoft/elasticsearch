@@ -154,9 +154,7 @@ func (e *BulkService) Delete() error {
 func (e *BulkService) Execute() (*BulkResponse, error) {
 
 	// create data on elastic
-	reader := bytes.NewReader(e.body)
-
-	request, err := http.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), reader)
+	request, err := http.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), e.buffer)
 	if err != nil {
 		return nil, errors.New("0", err)
 	}
