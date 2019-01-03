@@ -165,30 +165,30 @@ func (e *BulkService) Execute() (*BulkResponse, error) {
 	fmt.Println(e.buffer.String())
 	request, err := http.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), e.buffer)
 	if err != nil {
-		return nil, errors.New("0", err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return nil, errors.New("0", err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 	defer response.Body.Close()
 
 	// unmarshal data
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return nil, errors.New("0", err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
 	fmt.Println(string(body))
 
 	elasticResponse := BulkResponse{}
 	if err = json.Unmarshal(body, &elasticResponse); err != nil {
-		return nil, errors.New("0", err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
 	if elasticResponse.Errors {
-		return &elasticResponse, errors.New("0", "error executing the request")
+		return &elasticResponse, errors.New(errors.ErrorLevel, 0, "error executing the request")
 	}
 
 	return &elasticResponse, nil
