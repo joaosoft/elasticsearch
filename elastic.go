@@ -30,14 +30,14 @@ func NewElastic(options ...ElasticOption) *Elastic {
 	appConfig := &AppConfig{}
 	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
-	} else {
+	} else if appConfig.Elastic != nil {
 		elastic.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(appConfig.Elastic.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
 	}
 
-	elastic.config = &appConfig.Elastic
+	elastic.config = appConfig.Elastic
 
 	elastic.Reconfigure(options...)
 

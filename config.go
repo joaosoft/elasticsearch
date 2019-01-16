@@ -8,7 +8,7 @@ import (
 
 // AppConfig ...
 type AppConfig struct {
-	Elastic ElasticConfig `json:"elastic"`
+	Elastic *ElasticConfig `json:"elastic"`
 }
 
 // ElasticConfig ...
@@ -28,5 +28,5 @@ func NewConfig(endpoint string) *ElasticConfig {
 
 	appConfig.Elastic.Endpoint = endpoint
 
-	return &appConfig.Elastic
+	return appConfig.Elastic
 }
