@@ -19,7 +19,8 @@ type Elastic struct {
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
 	elastic := &Elastic{
-		pm: manager.NewManager(manager.WithRunInBackground(false)),
+		pm:     manager.NewManager(manager.WithRunInBackground(false)),
+		config: NewConfig(DefaultURL),
 	}
 
 	if elastic.isLogExternal {
@@ -35,9 +36,8 @@ func NewElastic(options ...ElasticOption) *Elastic {
 		level, _ := logger.ParseLevel(appConfig.Elastic.Log.Level)
 		log.Debugf("setting log level to %s", level)
 		log.Reconfigure(logger.WithLevel(level))
+		elastic.config = appConfig.Elastic
 	}
-
-	elastic.config = appConfig.Elastic
 
 	elastic.Reconfigure(options...)
 
