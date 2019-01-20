@@ -20,16 +20,16 @@ type ElasticConfig struct {
 }
 
 // NewConfig ...
-func NewConfig(endpoint string) *ElasticConfig {
+func NewConfig() (*ElasticConfig, error) {
 	appConfig := &AppConfig{}
 	if _, err := gomanager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
 
 		return &ElasticConfig{
 			Endpoint: DefaultURL,
-		}
+		}, err
 
 	}
 
-	return appConfig.Elastic
+	return appConfig.Elastic, nil
 }
