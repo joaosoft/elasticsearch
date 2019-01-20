@@ -24,9 +24,12 @@ func NewConfig(endpoint string) *ElasticConfig {
 	appConfig := &AppConfig{}
 	if _, err := gomanager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
 		log.Error(err.Error())
-	}
 
-	appConfig.Elastic.Endpoint = endpoint
+		return &ElasticConfig{
+			Endpoint: DefaultURL,
+		}
+
+	}
 
 	return appConfig.Elastic
 }
