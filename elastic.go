@@ -18,7 +18,7 @@ type Elastic struct {
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
 	config, simpleConfig, err := NewConfig()
-	log := logger.NewLogDefault("builder", logger.DebugLevel)
+	log := logger.NewLogDefault("elastic", logger.DebugLevel)
 
 	service := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
