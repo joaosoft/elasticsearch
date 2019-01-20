@@ -10,6 +10,7 @@ import (
 type Elastic struct {
 	config        *ElasticConfig
 	isLogExternal bool
+	logger logger.ILogger
 	pm            *manager.Manager
 	mux           sync.Mutex
 }
@@ -17,28 +18,30 @@ type Elastic struct {
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
 	config, simpleConfig, err := NewConfig()
+	log := logger.NewLogDefault("builder", logger.DebugLevel)
 
-	elastic := &Elastic{
+	service := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Elastic,
+		logger: log,
 	}
 
 	if err != nil {
-		log.Error(err.Error())
+		service.logger.Error(err.Error())
 	} else {
-		elastic.pm.AddConfig("config_app", simpleConfig)
+		service.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Elastic.Log.Level)
-		log.Debugf("setting log level to %s", level)
-		log.Reconfigure(logger.WithLevel(level))
+		service.logger.Debugf("setting log level to %s", level)
+		service.logger.Reconfigure(logger.WithLevel(level))
 	}
 
-	if elastic.isLogExternal {
-		elastic.pm.Reconfigure(manager.WithLogger(log))
+	if service.isLogExternal {
+		service.pm.Reconfigure(manager.WithLogger(log))
 	}
 
-	elastic.Reconfigure(options...)
+	service.Reconfigure(options...)
 
-	return elastic
+	return service
 }
 
 func (e *Elastic) Count() *CountService {

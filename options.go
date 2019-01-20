@@ -25,7 +25,7 @@ func WithConfiguration(config *ElasticConfig) ElasticOption {
 // WithLogger ...
 func WithLogger(logger logger.ILogger) ElasticOption {
 	return func(elastic *Elastic) {
-		log = logger
+		elastic.logger = logger
 		elastic.isLogExternal = true
 	}
 }
@@ -33,7 +33,7 @@ func WithLogger(logger logger.ILogger) ElasticOption {
 // WithLogLevel ...
 func WithLogLevel(level logger.Level) ElasticOption {
 	return func(elastic *Elastic) {
-		log.SetLevel(level)
+		elastic.logger.SetLevel(level)
 	}
 }
 
