@@ -20,7 +20,7 @@ func NewElastic(options ...ElasticOption) *Elastic {
 
 	elastic := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
-		config: config.Elastic,
+		config: &config.Elastic,
 	}
 
 	if err == nil {
