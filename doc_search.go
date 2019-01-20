@@ -97,7 +97,7 @@ func (e *SearchService) Template(path, name string, data *SearchTemplate, reload
 		defer e.client.mux.Unlock()
 		templates[key], err = ReadFile(key, nil)
 		if err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return e
 		}
 	}
@@ -106,13 +106,13 @@ func (e *SearchService) Template(path, name string, data *SearchTemplate, reload
 	t, err = t.Parse(string(templates[key]))
 	if err == nil {
 		if err := t.ExecuteTemplate(&result, name, data); err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return e
 		}
 
 		e.query = result.String()
 	} else {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return e
 	}
 
@@ -146,7 +146,7 @@ func (e *SearchService) Execute() error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return errors.New(errors.ErrorLevel, 0, err)
 	}
 	defer response.Body.Close()
@@ -154,7 +154,7 @@ func (e *SearchService) Execute() error {
 	// unmarshal data
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return errors.New(errors.ErrorLevel, 0, err)
 	}
 
@@ -163,19 +163,19 @@ func (e *SearchService) Execute() error {
 	if e.id != "" {
 		elasticResponse := SearchHit{}
 		if err := json.Unmarshal(body, &elasticResponse); err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return errors.New(errors.ErrorLevel, 0, err)
 		}
 
 		hit, err = json.Marshal(elasticResponse.Source)
 		if err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return errors.New(errors.ErrorLevel, 0, err)
 		}
 	} else {
 		elasticResponse := SearchResponse{}
 		if err := json.Unmarshal(body, &elasticResponse); err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return errors.New(errors.ErrorLevel, 0, err)
 		}
 

@@ -62,7 +62,7 @@ func (e *CountService) Template(path, name string, data *CountTemplate, reload b
 		defer e.client.mux.Unlock()
 		templates[key], err = ReadFile(key, nil)
 		if err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return e
 		}
 	}
@@ -71,13 +71,13 @@ func (e *CountService) Template(path, name string, data *CountTemplate, reload b
 	t, err = t.Parse(string(templates[key]))
 	if err == nil {
 		if err := t.ExecuteTemplate(&result, name, data); err != nil {
-			log.Error(err)
+			e.client.logger.Error(err)
 			return e
 		}
 
 		e.query = result.String()
 	} else {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return e
 	}
 
@@ -107,7 +107,7 @@ func (e *CountService) Execute() (int64, error) {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return 0, errors.New(errors.ErrorLevel, 0, err)
 	}
 	defer response.Body.Close()
@@ -115,13 +115,13 @@ func (e *CountService) Execute() (int64, error) {
 	// unmarshal data
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return 0, errors.New(errors.ErrorLevel, 0, err)
 	}
 
 	elasticResponse := CountResponse{}
 	if err := json.Unmarshal(body, &elasticResponse); err != nil {
-		log.Error(err)
+		e.client.logger.Error(err)
 		return 0, errors.New(errors.ErrorLevel, 0, err)
 	}
 
