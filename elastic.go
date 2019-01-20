@@ -23,7 +23,9 @@ func NewElastic(options ...ElasticOption) *Elastic {
 		config: &config.Elastic,
 	}
 
-	if err == nil {
+	if err != nil {
+		log.Error(err.Error())
+	} else {
 		elastic.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Elastic.Log.Level)
 		log.Debugf("setting log level to %s", level)
