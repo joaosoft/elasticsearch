@@ -18,12 +18,11 @@ type Elastic struct {
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
 	config, simpleConfig, err := NewConfig()
-	log := logger.NewLogDefault("elastic", logger.DebugLevel)
 
 	service := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Elastic,
-		logger: log,
+		logger: logger.NewLogDefault("elastic", logger.DebugLevel),
 	}
 
 	if err != nil {
@@ -36,7 +35,7 @@ func NewElastic(options ...ElasticOption) *Elastic {
 	}
 
 	if service.isLogExternal {
-		service.pm.Reconfigure(manager.WithLogger(log))
+		service.pm.Reconfigure(manager.WithLogger(service.logger))
 	}
 
 	service.Reconfigure(options...)
