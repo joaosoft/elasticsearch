@@ -1,12 +1,10 @@
 package elastic
 
 import (
-	"fmt"
-
 	"sync"
 
-	logger "github.com/joaosoft/logger"
-	manager "github.com/joaosoft/manager"
+	"github.com/joaosoft/logger"
+	"github.com/joaosoft/manager"
 )
 
 type Elastic struct {
@@ -18,32 +16,25 @@ type Elastic struct {
 
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
+	config, simpleConfig, err := NewConfig()
+
 	elastic := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
-		config: NewConfig(DefaultURL),
+		config: config.Elastic,
+	}
+
+	if err == nil {
+		elastic.pm.AddConfig("config_app", simpleConfig)
+		level, _ := logger.ParseLevel(config.Elastic.Log.Level)
+		log.Debugf("setting log level to %s", level)
+		log.Reconfigure(logger.WithLevel(level))
 	}
 
 	if elastic.isLogExternal {
 		elastic.pm.Reconfigure(manager.WithLogger(log))
 	}
 
-	// load configuration File
-	appConfig := &AppConfig{}
-	if simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig); err != nil {
-		log.Error(err.Error())
-	} else if appConfig.Elastic != nil {
-		elastic.pm.AddConfig("config_app", simpleConfig)
-		level, _ := logger.ParseLevel(appConfig.Elastic.Log.Level)
-		log.Debugf("setting log level to %s", level)
-		log.Reconfigure(logger.WithLevel(level))
-		elastic.config = appConfig.Elastic
-	}
-
 	elastic.Reconfigure(options...)
-
-	if elastic.config.Endpoint == "" {
-		elastic.config.Endpoint = DefaultURL
-	}
 
 	return elastic
 }
