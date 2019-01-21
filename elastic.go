@@ -10,7 +10,7 @@ import (
 type Elastic struct {
 	config        *ElasticConfig
 	isLogExternal bool
-	logger logger.ILogger
+	logger        logger.ILogger
 	pm            *manager.Manager
 	mux           sync.Mutex
 }
@@ -22,7 +22,7 @@ func NewElastic(options ...ElasticOption) *Elastic {
 	service := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: &config.Elastic,
-		logger: logger.NewLogDefault("elastic", logger.DebugLevel),
+		logger: logger.NewLogDefault("elastic", logger.WarnLevel),
 	}
 
 	if err != nil {
