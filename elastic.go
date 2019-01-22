@@ -21,13 +21,13 @@ func NewElastic(options ...ElasticOption) *Elastic {
 
 	service := &Elastic{
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
-		config: &config.Elastic,
+		config: config.Elastic,
 		logger: logger.NewLogDefault("elastic", logger.WarnLevel),
 	}
 
 	if err != nil {
 		service.logger.Error(err.Error())
-	} else {
+	} else if config.Elastic != nil {
 		service.pm.AddConfig("config_app", simpleConfig)
 		level, _ := logger.ParseLevel(config.Elastic.Log.Level)
 		service.logger.Debugf("setting log level to %s", level)

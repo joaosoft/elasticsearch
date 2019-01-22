@@ -8,7 +8,7 @@ import (
 
 // AppConfig ...
 type AppConfig struct {
-	Elastic ElasticConfig `json:"elastic"`
+	Elastic *ElasticConfig `json:"elastic"`
 }
 
 // ElasticConfig ...
