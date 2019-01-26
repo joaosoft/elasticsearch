@@ -17,7 +17,7 @@ func searchDocument(name string) {
 
 	// document search
 	dir, _ := os.Getwd()
-	err := client.Search().
+	err, _ := client.Search().
 		Index("persons").
 		Type("person").
 		Object(&data).

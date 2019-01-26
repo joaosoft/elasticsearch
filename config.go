@@ -3,6 +3,8 @@ package elastic
 import (
 	"fmt"
 
+	"github.com/joaosoft/logger"
+
 	"github.com/joaosoft/manager"
 )
 
@@ -20,9 +22,19 @@ type ElasticConfig struct {
 }
 
 // NewConfig ...
-func NewConfig() (*AppConfig, manager.IConfig, error) {
+func NewConfig(config ...interface{}) (*AppConfig, manager.IConfig, error) {
 	appConfig := &AppConfig{}
 	simpleConfig, err := manager.NewSimpleConfig(fmt.Sprintf("/config/app.%s.json", GetEnv()), appConfig)
+
+	if len(config) > 0 {
+
+		if appConfig.Elastic == nil {
+			appConfig.Elastic = &ElasticConfig{}
+			appConfig.Elastic.Log.Level = logger.ErrorLevel.String()
+		}
+
+		appConfig.Elastic.Endpoint = config[0].(string)
+	}
 
 	return appConfig, simpleConfig, err
 }

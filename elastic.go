@@ -3,11 +3,14 @@ package elastic
 import (
 	"sync"
 
+	"github.com/joaosoft/web"
+
 	"github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
 )
 
 type Elastic struct {
+	*web.Client
 	config        *ElasticConfig
 	isLogExternal bool
 	logger        logger.ILogger
@@ -18,8 +21,10 @@ type Elastic struct {
 // NewElastic ...
 func NewElastic(options ...ElasticOption) *Elastic {
 	config, simpleConfig, err := NewConfig()
+	webClient, _ := web.NewClient()
 
 	service := &Elastic{
+		Client: webClient,
 		pm:     manager.NewManager(manager.WithRunInBackground(false)),
 		config: config.Elastic,
 		logger: logger.NewLogDefault("elastic", logger.WarnLevel),
@@ -47,36 +52,20 @@ func (e *Elastic) Count() *CountService {
 	return NewCountService(e)
 }
 
-func (e *Elastic) Create() *CreateService {
-	return NewCreateService(e)
-}
-
-func (e *Elastic) Update() *UpdateService {
-	return NewUpdateService(e)
-}
-
-func (elastic *Elastic) Delete() *DeleteService {
-	return NewDeleteService(elastic)
+func (e *Elastic) Document() *DocumentService {
+	return NewDocumentService(e)
 }
 
 func (e *Elastic) Search() *SearchService {
 	return NewSearchService(e)
 }
 
-func (e *Elastic) ExistsIndex() *ExistsIndexService {
-	return NewExistsIndexService(e)
+func (e *Elastic) Index() *IndexService {
+	return NewIndexService(e)
 }
 
-func (e *Elastic) CreateIndex() *CreateIndexService {
-	return NewCreateIndexService(e)
-}
-
-func (e *Elastic) UpdateIndex() *CreateIndexService {
-	return NewCreateIndexService(e)
-}
-
-func (e *Elastic) DeleteIndex() *DeleteIndexService {
-	return NewDeleteIndexService(e)
+func (e *Elastic) Scrool() *ScrollService {
+	return NewScrollService(e)
 }
 
 func (e *Elastic) Bulk() *BulkService {

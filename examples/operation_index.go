@@ -10,7 +10,7 @@ func createIndexWithMapping() {
 	// you can define the configuration without having a configuration file
 	//client1 := elastic.NewElastic(elastic.WithConfiguration(elastic.NewConfig("http://localhost:9200")))
 
-	err := client.CreateIndex().Index("persons").Body([]byte(`
+	response, err := client.Index().Index("persons").Body([]byte(`
 {
   "mappings": {
     "person": {
@@ -31,11 +31,33 @@ func createIndexWithMapping() {
     }
   }
 }
-`)).Execute()
+`)).Create()
 
 	if err != nil {
 		log.Error(err)
 	} else {
-		fmt.Printf("\ncreated mapping for persons index\n")
+		fmt.Printf("\ncreated mapping for persons index ok: %t\n", response.Acknowledged)
+	}
+}
+
+func deleteIndex() {
+
+	response, err := client.Index().Index("persons").Delete()
+
+	if err != nil {
+		log.Error(err)
+	} else {
+		fmt.Printf("\ndeleted persons index ok: %t\n", response.Acknowledged)
+	}
+}
+
+func existsIndex(index string) {
+
+	exists, err := client.Index().Index(index).Exists()
+
+	if err != nil {
+		log.Error(err)
+	} else {
+		fmt.Printf("\nexists index? %t\n", exists)
 	}
 }

@@ -1,13 +1,13 @@
 # elastic
 [![Build Status](https://travis-ci.org/joaosoft/elastic.svg?branch=master)](https://travis-ci.org/joaosoft/elastic) | [![codecov](https://codecov.io/gh/joaosoft/elastic/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/elastic) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/elastic)](https://goreportcard.com/report/github.com/joaosoft/elastic) | [![GoDoc](https://godoc.org/github.com/joaosoft/elastic?status.svg)](https://godoc.org/github.com/joaosoft/elastic)
 
-A simple and fast elastic client.
+A simple and fast elastic-search client.
 
 ## Support for 
-> Create / Exists / Delete index (with or without mapping)
-> Create / Update / Delete documents
-> Search documents
-> Bulk index/create/update/delete
+> Index (Create / Exists / Delete)  [with or without mapping]
+> Document (Create / Update / Delete)
+> Search
+> Bulk (Index / Create / Update / Delete)
 
 * The search can be done with a template to be faster than other complicated frameworks.
 

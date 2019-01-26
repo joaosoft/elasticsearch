@@ -5,30 +5,36 @@ import (
 
 	"bytes"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strings"
 	"text/template"
 
-	errors "github.com/joaosoft/errors"
+	"github.com/joaosoft/errors"
+	"github.com/joaosoft/web"
 )
 
 type CountResponse struct {
-	Count int64 `json:"count"`
+	Count  int64 `json:"count"`
+	Shards struct {
+		Total      int64 `json:"total"`
+		Successful int64 `json:"successful"`
+		Skipped    int64 `json:"skipped"`
+		Failed     int64 `json:"failed"`
+	} `json:"_shards"`
+	*OnError
+	*OnErrorDocumentNotFound
 }
 
 type CountService struct {
 	client *Elastic
 	index  string
 	typ    string
-	query  string
-	method string
+	body   []byte
+	method web.Method
 }
 
 func NewCountService(client *Elastic) *CountService {
 	return &CountService{
 		client: client,
-		method: http.MethodGet,
+		method: web.MethodGet,
 	}
 }
 
@@ -42,8 +48,8 @@ func (e *CountService) Type(typ string) *CountService {
 	return e
 }
 
-func (e *CountService) Query(query string) *CountService {
-	e.query = query
+func (e *CountService) Query(query []byte) *CountService {
+	e.body = query
 	return e
 }
 
@@ -75,7 +81,7 @@ func (e *CountService) Template(path, name string, data *CountTemplate, reload b
 			return e
 		}
 
-		e.query = result.String()
+		e.body = result.Bytes()
 	} else {
 		e.client.logger.Error(err)
 		return e
@@ -84,14 +90,11 @@ func (e *CountService) Template(path, name string, data *CountTemplate, reload b
 	return e
 }
 
-func (e *CountService) Execute() (int64, error) {
+func (e *CountService) Execute() (*CountResponse, error) {
 
-	if e.query != "" {
-		e.method = http.MethodPost
+	if e.body != nil {
+		e.method = web.MethodPost
 	}
-
-	// get data from elastic
-	reader := strings.NewReader(e.query)
 
 	var q string
 	if e.typ != "" {
@@ -100,30 +103,21 @@ func (e *CountService) Execute() (int64, error) {
 
 	q += "/_count"
 
-	request, err := http.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, q), reader)
+	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, q))
 	if err != nil {
-		return 0, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := request.WithBody(e.body, web.ContentTypeApplicationJSON).Send()
 	if err != nil {
-		e.client.logger.Error(err)
-		return 0, errors.New(errors.ErrorLevel, 0, err)
-	}
-	defer response.Body.Close()
-
-	// unmarshal data
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		e.client.logger.Error(err)
-		return 0, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
 	elasticResponse := CountResponse{}
-	if err := json.Unmarshal(body, &elasticResponse); err != nil {
+	if err := json.Unmarshal(response.Body, &elasticResponse); err != nil {
 		e.client.logger.Error(err)
-		return 0, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	return elasticResponse.Count, nil
+	return &elasticResponse, nil
 }
