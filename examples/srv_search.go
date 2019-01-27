@@ -22,7 +22,7 @@ func searchDocument(name string) {
 		Type("person").
 		Object(&data).
 		Template(dir+"/examples/templates", "get.example.search.template", &d1, false).
-		Execute()
+		Search()
 
 	if err != nil {
 		log.Error(err)

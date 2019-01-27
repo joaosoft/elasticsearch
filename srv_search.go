@@ -122,18 +122,17 @@ func (e *SearchService) Scroll(scrollTime string) *SearchService {
 	return e
 }
 
-func (e *SearchService) Count() *SearchService {
-	e.operation = "_count"
-	return e
-}
-
 type SearchTemplate struct {
 	Data interface{} `json:"data,omitempty"`
 	From int         `json:"from,omitempty"`
 	Size int         `json:"size,omitempty"`
 }
 
-func (e *SearchService) Template(path, name string, data *SearchTemplate, reload bool) *SearchService {
+type CountTemplate struct {
+	Data interface{} `json:"data,omitempty"`
+}
+
+func (e *SearchService) Template(path, name string, data interface{}, reload bool) *SearchService {
 	key := fmt.Sprintf("%s/%s", path, name)
 
 	var result bytes.Buffer
@@ -166,7 +165,17 @@ func (e *SearchService) Template(path, name string, data *SearchTemplate, reload
 	return e
 }
 
-func (e *SearchService) Execute() (*SearchResponse, error) {
+func (e *SearchService) Count() (*SearchResponse, error) {
+	e.operation = "_count"
+	return e.execute()
+}
+
+func (e *SearchService) Search() (*SearchResponse, error) {
+	e.operation = "_search"
+	return e.execute()
+}
+
+func (e *SearchService) execute() (*SearchResponse, error) {
 
 	if e.body != nil {
 		e.method = web.MethodPost
