@@ -3,10 +3,9 @@ package elastic
 import (
 	"sync"
 
-	"github.com/joaosoft/web"
-
 	"github.com/joaosoft/logger"
 	"github.com/joaosoft/manager"
+	"github.com/joaosoft/web"
 )
 
 type Elastic struct {
@@ -19,9 +18,12 @@ type Elastic struct {
 }
 
 // NewElastic ...
-func NewElastic(options ...ElasticOption) *Elastic {
+func NewElastic(options ...ElasticOption) (*Elastic, error) {
 	config, simpleConfig, err := NewConfig()
-	webClient, _ := web.NewClient()
+	webClient, err := web.NewClient()
+	if err != nil {
+		return nil, err
+	}
 
 	service := &Elastic{
 		Client: webClient,
@@ -45,7 +47,7 @@ func NewElastic(options ...ElasticOption) *Elastic {
 
 	service.Reconfigure(options...)
 
-	return service
+	return service, nil
 }
 
 func (e *Elastic) Count() *CountService {
