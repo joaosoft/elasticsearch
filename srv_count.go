@@ -48,8 +48,8 @@ func (e *CountService) Type(typ string) *CountService {
 	return e
 }
 
-func (e *CountService) Query(query []byte) *CountService {
-	e.body = query
+func (e *CountService) Body(body []byte) *CountService {
+	e.body = body
 	return e
 }
 

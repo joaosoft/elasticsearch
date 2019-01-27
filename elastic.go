@@ -64,10 +64,6 @@ func (e *Elastic) Index() *IndexService {
 	return NewIndexService(e)
 }
 
-func (e *Elastic) Scrool() *ScrollService {
-	return NewScrollService(e)
-}
-
 func (e *Elastic) Bulk() *BulkService {
 	return NewBulkService(e)
 }

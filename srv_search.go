@@ -1,9 +1,8 @@
 package elastic
 
 import (
-	"encoding/json"
-
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"text/template"
 
@@ -11,9 +10,19 @@ import (
 	"github.com/joaosoft/web"
 )
 
+const (
+	constScroll = "scroll"
+	constFrom   = "from"
+	constSize   = "size"
+)
+
+type Query interface {
+	Bytes() []byte
+}
+
 type SearchResponse struct {
-	Took     int64  `json:"took"`
-	TimedOut bool `json:"timed_out"`
+	Took     int64 `json:"took"`
+	TimedOut bool  `json:"timed_out"`
 	Shards   struct {
 		Total      int64 `json:"total"`
 		Successful int64 `json:"successful"`
@@ -27,7 +36,7 @@ type SearchResponse struct {
 			Index  string          `json:"_index"`
 			Type   string          `json:"_type"`
 			ID     string          `json:"_id"`
-			Score  int64             `json:"_score"`
+			Score  int64           `json:"_score"`
 			Source json.RawMessage `json:"_source"`
 		} `json:"hits"`
 	} `json:"hits"`
@@ -43,19 +52,21 @@ type OnErrorDocumentNotFound struct {
 }
 
 type SearchService struct {
-	client *Elastic
-	index  string
-	typ    string
-	id     string
-	body   []byte
-	object interface{}
-	method web.Method
+	client     *Elastic
+	index      string
+	typ        string
+	id         string
+	body       []byte
+	object     interface{}
+	parameters map[string]interface{}
+	method     web.Method
 }
 
 func NewSearchService(client *Elastic) *SearchService {
 	return &SearchService{
-		client: client,
-		method: web.MethodGet,
+		client:     client,
+		method:     web.MethodGet,
+		parameters: make(map[string]interface{}),
 	}
 }
 
@@ -74,13 +85,33 @@ func (e *SearchService) Id(id string) *SearchService {
 	return e
 }
 
-func (e *SearchService) Query(query []byte) *SearchService {
-	e.body = query
+func (e *SearchService) Body(body []byte) *SearchService {
+	e.body = body
+	return e
+}
+
+func (e *SearchService) Query(query Query) *SearchService {
+	e.body = query.Bytes()
 	return e
 }
 
 func (e *SearchService) Object(object interface{}) *SearchService {
 	e.object = object
+	return e
+}
+
+func (e *SearchService) From(from int64) *SearchService {
+	e.parameters[constFrom] = from
+	return e
+}
+
+func (e *SearchService) Size(size int64) *SearchService {
+	e.parameters[constSize] = size
+	return e
+}
+
+func (e *SearchService) Scroll(scrollTime string) *SearchService {
+	e.parameters[constScroll] = scrollTime
 	return e
 }
 
@@ -129,18 +160,29 @@ func (e *SearchService) Execute() (*SearchResponse, error) {
 		e.method = web.MethodPost
 	}
 
-	var q string
-	if e.typ != "" {
-		q += fmt.Sprintf("/%s", e.typ)
-	}
-
+	var query string
 	if e.id != "" {
-		q += fmt.Sprintf("/%s", e.id)
+		query += fmt.Sprintf("/%s", e.id)
 	} else {
-		q += "/_search"
+		query += "/_search"
 	}
 
-	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, q))
+	lenQ := len(e.parameters)
+	if lenQ > 0 {
+		query += "?"
+	}
+
+	addSeparator := false
+	for name, value := range e.parameters {
+		if addSeparator {
+			query += "&"
+		}
+
+		query += fmt.Sprintf("%s=%+v", name, value)
+		addSeparator = true
+	}
+
+	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, query))
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
