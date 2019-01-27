@@ -100,12 +100,12 @@ func (e *SearchService) Object(object interface{}) *SearchService {
 	return e
 }
 
-func (e *SearchService) From(from int64) *SearchService {
+func (e *SearchService) From(from int) *SearchService {
 	e.parameters[constFrom] = from
 	return e
 }
 
-func (e *SearchService) Size(size int64) *SearchService {
+func (e *SearchService) Size(size int) *SearchService {
 	e.parameters[constSize] = size
 	return e
 }
