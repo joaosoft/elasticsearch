@@ -36,7 +36,7 @@ type SearchResponse struct {
 			Index  string          `json:"_index"`
 			Type   string          `json:"_type"`
 			ID     string          `json:"_id"`
-			Score  int64           `json:"_score"`
+			Score  float64         `json:"_score"`
 			Source json.RawMessage `json:"_source"`
 		} `json:"hits"`
 	} `json:"hits"`
