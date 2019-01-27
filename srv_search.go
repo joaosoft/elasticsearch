@@ -60,6 +60,7 @@ type SearchService struct {
 	object     interface{}
 	parameters map[string]interface{}
 	method     web.Method
+	operation     string
 }
 
 func NewSearchService(client *Elastic) *SearchService {
@@ -67,6 +68,7 @@ func NewSearchService(client *Elastic) *SearchService {
 		client:     client,
 		method:     web.MethodGet,
 		parameters: make(map[string]interface{}),
+		operation: "_search",
 	}
 }
 
@@ -112,6 +114,11 @@ func (e *SearchService) Size(size int) *SearchService {
 
 func (e *SearchService) Scroll(scrollTime string) *SearchService {
 	e.parameters[constScroll] = scrollTime
+	return e
+}
+
+func (e *SearchService) Count() *SearchService {
+	e.operation = "_count"
 	return e
 }
 
@@ -164,7 +171,7 @@ func (e *SearchService) Execute() (*SearchResponse, error) {
 	if e.id != "" {
 		query += fmt.Sprintf("/%s", e.id)
 	} else {
-		query += "/_search"
+		query += fmt.Sprintf("/%s", e.operation)
 	}
 
 	lenQ := len(e.parameters)
