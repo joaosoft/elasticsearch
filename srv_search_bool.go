@@ -2,7 +2,7 @@ package elastic
 
 import "encoding/json"
 
-type bool struct {
+type Bool struct {
 	mappings  map[string]interface{}
 	must      []Query
 	filter    []Query
@@ -10,39 +10,39 @@ type bool struct {
 	shouldNot []Query
 }
 
-func NewBool() *bool {
-	new := &bool{}
+func NewBool() *Bool {
+	new := &Bool{}
 
 	return new
 }
 
-func (m *bool) Must(value Query) *bool {
+func (m *Bool) Must(value Query) *Bool {
 	m.mappings["must"] = value
 	return m
 }
 
-func (m *bool) Filter(value Query) *bool {
+func (m *Bool) Filter(value Query) *Bool {
 	m.mappings["filter"] = value
 	return m
 }
 
-func (m *bool) Should(value Query) *bool {
+func (m *Bool) Should(value Query) *Bool {
 	m.mappings["should"] = value
 	return m
 }
 
-func (m *bool) ShouldNot(value Query) *bool {
+func (m *Bool) ShouldNot(value Query) *Bool {
 	m.mappings["should_not"] = value
 	return m
 }
 
-func (m *bool) Bytes() []byte {
+func (m *Bool) Bytes() []byte {
 	data := map[string]map[string]interface{}{"bool": m.mappings}
 	bytes, _ := json.Marshal(data)
 
 	return bytes
 }
 
-func (m *bool) String() string {
+func (m *Bool) String() string {
 	return string(m.Bytes())
 }

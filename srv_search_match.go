@@ -13,13 +13,13 @@ const (
 	ZeroTermsQueryNone zeroTermsQuery = "none"
 )
 
-type match struct {
+type Match struct {
 	mappings map[string]interface{}
 	field    string
 }
 
-func NewMatch(field string, query string) *match {
-	new := &match{
+func NewMatch(field string, query string) *Match {
+	new := &Match{
 		field: field,
 	}
 
@@ -28,73 +28,73 @@ func NewMatch(field string, query string) *match {
 	return new
 }
 
-func (m *match) Operator(value operator) *match {
+func (m *Match) Operator(value operator) *Match {
 	m.mappings["operator"] = value
 	return m
 }
 
-func (m *match) MinimumShouldMatch(value string) *match {
+func (m *Match) MinimumShouldMatch(value string) *Match {
 	m.mappings["minimum_should_match"] = value
 	return m
 }
 
-func (m *match) Analyzer(value string) *match {
+func (m *Match) Analyzer(value string) *Match {
 	m.mappings["analyzer"] = value
 	return m
 }
 
-func (m *match) Lenient(value bool) *match {
+func (m *Match) Lenient(value bool) *Match {
 	m.mappings["lenient"] = value
 	return m
 }
 
-func (m *match) Fuzziness(value string) *match {
+func (m *Match) Fuzziness(value string) *Match {
 	m.mappings["fuzziness"] = value
 	return m
 }
 
-func (m *match) FuzzyRewrite(value string) *match {
+func (m *Match) FuzzyRewrite(value string) *Match {
 	m.mappings["fuzzy_rewrite"] = value
 	return m
 }
 
-func (m *match) FuzzyTranspositions(value bool) *match {
+func (m *Match) FuzzyTranspositions(value bool) *Match {
 	m.mappings["fuzzy_transpositions"] = value
 	return m
 }
 
-func (m *match) PrefixLength(value int64) *match {
+func (m *Match) PrefixLength(value int64) *Match {
 	m.mappings["prefix_length"] = value
 	return m
 }
 
-func (m *match) MaxExpansions(value int64) *match {
+func (m *Match) MaxExpansions(value int64) *Match {
 	m.mappings["max_expansions"] = value
 	return m
 }
 
-func (m *match) ZeroTermsQuery(value zeroTermsQuery) *match {
+func (m *Match) ZeroTermsQuery(value zeroTermsQuery) *Match {
 	m.mappings["zero_terms_query"] = value
 	return m
 }
 
-func (m *match) CutoffFrequency(value float64) *match {
+func (m *Match) CutoffFrequency(value float64) *Match {
 	m.mappings["cutoff_frequency"] = value
 	return m
 }
 
-func (m *match) AutoGenerateSynonymsPhraseQuery(value bool) *match {
+func (m *Match) AutoGenerateSynonymsPhraseQuery(value bool) *Match {
 	m.mappings["auto_generate_synonyms_phrase_query"] = value
 	return m
 }
 
-func (m *match) Bytes() []byte {
-	data := map[string]map[string]interface{}{"match": {m.field: m.mappings}}
+func (m *Match) Bytes() []byte {
+	data := map[string]map[string]interface{}{"Match": {m.field: m.mappings}}
 	bytes, _ := json.Marshal(data)
 
 	return bytes
 }
 
-func (m *match) String() string {
+func (m *Match) String() string {
 	return string(m.Bytes())
 }

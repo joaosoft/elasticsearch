@@ -2,13 +2,13 @@ package elastic
 
 import "encoding/json"
 
-type term struct {
+type Term struct {
 	mappings map[string]interface{}
 	field    string
 }
 
-func NewTerm(field string, value interface{}) *term {
-	new := &term{
+func NewTerm(field string, value interface{}) *Term {
+	new := &Term{
 		field: field,
 	}
 
@@ -17,18 +17,18 @@ func NewTerm(field string, value interface{}) *term {
 	return new
 }
 
-func (m *term) Boost(value float64) *term {
+func (m *Term) Boost(value float64) *Term {
 	m.mappings["boost"] = value
 	return m
 }
 
-func (m *term) Bytes() []byte {
-	data := map[string]map[string]interface{}{"term": m.mappings}
+func (m *Term) Bytes() []byte {
+	data := map[string]map[string]interface{}{"Term": m.mappings}
 	bytes, _ := json.Marshal(data)
 
 	return bytes
 }
 
-func (m *term) String() string {
+func (m *Term) String() string {
 	return string(m.Bytes())
 }
