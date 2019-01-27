@@ -20,6 +20,10 @@ type Query interface {
 	Bytes() []byte
 }
 
+type OnCount struct {
+	Count int64 `json:"count"`
+}
+
 type SearchResponse struct {
 	Took     int64 `json:"took"`
 	TimedOut bool  `json:"timed_out"`
@@ -40,6 +44,7 @@ type SearchResponse struct {
 			Source json.RawMessage `json:"_source"`
 		} `json:"hits"`
 	} `json:"hits"`
+	*OnCount
 	*OnError
 	*OnErrorDocumentNotFound
 }
@@ -60,7 +65,7 @@ type SearchService struct {
 	object     interface{}
 	parameters map[string]interface{}
 	method     web.Method
-	operation     string
+	operation  string
 }
 
 func NewSearchService(client *Elastic) *SearchService {
@@ -68,7 +73,7 @@ func NewSearchService(client *Elastic) *SearchService {
 		client:     client,
 		method:     web.MethodGet,
 		parameters: make(map[string]interface{}),
-		operation: "_search",
+		operation:  "_search",
 	}
 }
 
