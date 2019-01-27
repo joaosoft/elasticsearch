@@ -30,8 +30,8 @@ type SearchResponse struct {
 		Failed     int64 `json:"failed"`
 	} `json:"_shards"`
 	Hits struct {
-		Total    int64 `json:"total"`
-		MaxScore int64 `json:"max_score"`
+		Total    int64   `json:"total"`
+		MaxScore float64 `json:"max_score"`
 		Hits     []struct {
 			Index  string          `json:"_index"`
 			Type   string          `json:"_type"`
