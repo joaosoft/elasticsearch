@@ -50,10 +50,6 @@ func NewElastic(options ...ElasticOption) (*Elastic, error) {
 	return service, nil
 }
 
-func (e *Elastic) Count() *CountService {
-	return NewCountService(e)
-}
-
 func (e *Elastic) Document() *DocumentService {
 	return NewDocumentService(e)
 }
