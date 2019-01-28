@@ -66,6 +66,7 @@ type SearchService struct {
 	index      string
 	typ        string
 	id         string
+	queries    bytes.Buffer
 	body       []byte
 	object     interface{}
 	parameters map[string]interface{}
@@ -102,8 +103,18 @@ func (e *SearchService) Body(body []byte) *SearchService {
 	return e
 }
 
-func (e *SearchService) Query(query Query) *SearchService {
-	e.body = query.Bytes()
+func (e *SearchService) Query(queries ...Query) *SearchService {
+
+	addSeparator := false
+	for _, query := range queries {
+
+		if addSeparator {
+			e.queries.WriteString("\n")
+		}
+
+		e.queries.Write(query.Bytes())
+		addSeparator = true
+	}
 	return e
 }
 
@@ -161,7 +172,7 @@ func (e *SearchService) Template(path, name string, data interface{}, reload boo
 			return e
 		}
 
-		e.body = result.Bytes()
+		e.queries.Write(result.Bytes())
 	} else {
 		e.client.logger.Error(err)
 		return e
@@ -182,6 +193,9 @@ func (e *SearchService) Search() (*SearchResponse, error) {
 
 func (e *SearchService) execute() (*SearchResponse, error) {
 
+	if e.queries.Len() > 0 {
+		e.body = e.queries.Bytes()
+	}
 	if e.body != nil {
 		e.method = web.MethodPost
 	}
