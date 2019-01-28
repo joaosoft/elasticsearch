@@ -16,23 +16,27 @@ func NewBool() *Bool {
 	return new
 }
 
-func (m *Bool) Must(value Query) *Bool {
-	m.mappings["must"] = value
+func (m *Bool) Must(value ...Query) *Bool {
+	m.must = append(m.must, value...)
+	m.mappings["must"] = m.must
 	return m
 }
 
-func (m *Bool) Filter(value Query) *Bool {
-	m.mappings["filter"] = value
+func (m *Bool) Filter(value ...Query) *Bool {
+	m.filter = append(m.filter, value...)
+	m.mappings["filter"] = m.filter
 	return m
 }
 
-func (m *Bool) Should(value Query) *Bool {
-	m.mappings["should"] = value
+func (m *Bool) Should(value ...Query) *Bool {
+	m.should = append(m.should, value...)
+	m.mappings["should"] = m.should
 	return m
 }
 
-func (m *Bool) ShouldNot(value Query) *Bool {
-	m.mappings["should_not"] = value
+func (m *Bool) ShouldNot(value ...Query) *Bool {
+	m.shouldNot = append(m.shouldNot, value...)
+	m.mappings["should_not"] = m.shouldNot
 	return m
 }
 
