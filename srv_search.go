@@ -105,15 +105,13 @@ func (e *SearchService) Body(body []byte) *SearchService {
 
 func (e *SearchService) Query(queries ...Query) *SearchService {
 
-	addSeparator := false
 	for _, query := range queries {
 
-		if addSeparator {
+		if e.queries.Len() > 0 {
 			e.queries.WriteString("\n")
 		}
 
 		e.queries.Write(query.Bytes())
-		addSeparator = true
 	}
 	return e
 }
