@@ -10,10 +10,15 @@ import (
 	"github.com/joaosoft/web"
 )
 
+type operation string
+
 const (
 	constScroll = "scroll"
 	constFrom   = "from"
 	constSize   = "size"
+
+	constOperationSearch = "_search"
+	constOperationCount  = "_count"
 )
 
 type Query interface {
@@ -65,7 +70,7 @@ type SearchService struct {
 	object     interface{}
 	parameters map[string]interface{}
 	method     web.Method
-	operation  string
+	operation  operation
 }
 
 func NewSearchService(client *Elastic) *SearchService {
@@ -166,12 +171,12 @@ func (e *SearchService) Template(path, name string, data interface{}, reload boo
 }
 
 func (e *SearchService) Count() (*SearchResponse, error) {
-	e.operation = "_count"
+	e.operation = constOperationCount
 	return e.execute()
 }
 
 func (e *SearchService) Search() (*SearchResponse, error) {
-	e.operation = "_search"
+	e.operation = constOperationSearch
 	return e.execute()
 }
 
@@ -223,18 +228,20 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 		return &elasticResponse, nil
 	}
 
-	rawHits := make([]json.RawMessage, len(elasticResponse.Hits.Hits))
-	for i, rawHit := range elasticResponse.Hits.Hits {
-		rawHits[i] = rawHit.Source
-	}
+	if e.operation == constOperationSearch {
+		rawHits := make([]json.RawMessage, len(elasticResponse.Hits.Hits))
+		for i, rawHit := range elasticResponse.Hits.Hits {
+			rawHits[i] = rawHit.Source
+		}
 
-	arrayHits, err := json.Marshal(rawHits)
-	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
-	}
+		arrayHits, err := json.Marshal(rawHits)
+		if err != nil {
+			return nil, errors.New(errors.ErrorLevel, 0, err)
+		}
 
-	if err := json.Unmarshal(arrayHits, e.object); err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		if err := json.Unmarshal(arrayHits, e.object); err != nil {
+			return nil, errors.New(errors.ErrorLevel, 0, err)
+		}
 	}
 
 	return &elasticResponse, nil
