@@ -22,7 +22,7 @@ const (
 )
 
 type Query interface {
-	Bytes() []byte
+	Data() interface{}
 }
 
 type OnCount struct {
@@ -66,7 +66,9 @@ type SearchService struct {
 	index      string
 	typ        string
 	id         string
-	queries    bytes.Buffer
+	queries    map[string]interface{}
+	template   []byte
+	query      map[string]interface{}
 	body       []byte
 	object     interface{}
 	parameters map[string]interface{}
@@ -79,6 +81,8 @@ func NewSearchService(client *Elastic) *SearchService {
 		client:     client,
 		method:     web.MethodGet,
 		parameters: make(map[string]interface{}),
+		queries:    make(map[string]interface{}),
+		query:      make(map[string]interface{}),
 		operation:  "_search",
 	}
 }
@@ -106,13 +110,11 @@ func (e *SearchService) Body(body []byte) *SearchService {
 func (e *SearchService) Query(queries ...Query) *SearchService {
 
 	for _, query := range queries {
-
-		if e.queries.Len() > 0 {
-			e.queries.WriteString("\n")
+		for key, value := range query.Data().(map[string]interface{}) {
+			e.queries[key] = value
 		}
-
-		e.queries.Write(query.Bytes())
 	}
+
 	return e
 }
 
@@ -170,7 +172,7 @@ func (e *SearchService) Template(path, name string, data interface{}, reload boo
 			return e
 		}
 
-		e.queries.Write(result.Bytes())
+		e.template = result.Bytes()
 	} else {
 		e.client.logger.Error(err)
 		return e
@@ -191,9 +193,13 @@ func (e *SearchService) Search() (*SearchResponse, error) {
 
 func (e *SearchService) execute() (*SearchResponse, error) {
 
-	if e.queries.Len() > 0 {
-		e.body = e.queries.Bytes()
+	if len(e.queries) > 0 {
+		e.query["query"] = e.queries
+		e.body, _ = json.Marshal(e.query)
+	} else if e.template != nil {
+		e.body = e.template
 	}
+
 	if e.body != nil {
 		e.method = web.MethodPost
 	}
@@ -225,7 +231,8 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	response, err := request.WithBody(e.body, web.ContentTypeApplicationJSON).Send()
+	body, _ := json.Marshal(e.body)
+	response, err := request.WithBody(body, web.ContentTypeApplicationJSON).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}

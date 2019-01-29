@@ -21,7 +21,7 @@ type Match struct {
 func NewMatch(field string, query string) *Match {
 	new := &Match{
 		mappings: make(map[string]interface{}),
-		field: field,
+		field:    field,
 	}
 
 	new.mappings["query"] = query
@@ -89,9 +89,13 @@ func (m *Match) AutoGenerateSynonymsPhraseQuery(value bool) *Match {
 	return m
 }
 
+func (m *Match) Data() interface{} {
+	data := map[string]map[string]interface{}{"match": {m.field: m.mappings}}
+	return data
+}
+
 func (m *Match) Bytes() []byte {
-	data := map[string]map[string]interface{}{"Match": {m.field: m.mappings}}
-	bytes, _ := json.Marshal(data)
+	bytes, _ := json.Marshal(m.Data())
 
 	return bytes
 }

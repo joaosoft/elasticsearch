@@ -14,9 +14,13 @@ func NewSort(fields ...*SortField) *Sort {
 	return new
 }
 
-func (s *Sort) Bytes() []byte {
+func (s *Sort) Data() interface{} {
 	data := map[string]interface{}{"sort": s.mappings}
-	bytes, _ := json.Marshal(data)
+	return data
+}
+
+func (s *Sort) Bytes() []byte {
+	bytes, _ := json.Marshal(s.Data())
 
 	return bytes
 }

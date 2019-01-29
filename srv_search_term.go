@@ -9,8 +9,8 @@ type Term struct {
 
 func NewTerm(field string, value interface{}) *Term {
 	new := &Term{
-		mappings:make(map[string]interface{}),
-		field: field,
+		mappings: make(map[string]interface{}),
+		field:    field,
 	}
 
 	new.mappings["value"] = value
@@ -18,18 +18,22 @@ func NewTerm(field string, value interface{}) *Term {
 	return new
 }
 
-func (m *Term) Boost(value float64) *Term {
-	m.mappings["boost"] = value
-	return m
+func (t *Term) Boost(value float64) *Term {
+	t.mappings["boost"] = value
+	return t
 }
 
-func (m *Term) Bytes() []byte {
-	data := map[string]map[string]interface{}{"Term": m.mappings}
-	bytes, _ := json.Marshal(data)
+func (t *Term) Data() interface{} {
+	data := map[string]map[string]interface{}{"term": t.mappings}
+	return data
+}
+
+func (t *Term) Bytes() []byte {
+	bytes, _ := json.Marshal(t.Data())
 
 	return bytes
 }
 
-func (m *Term) String() string {
-	return string(m.Bytes())
+func (t *Term) String() string {
+	return string(t.Bytes())
 }

@@ -18,45 +18,49 @@ func NewBool() *Bool {
 	return new
 }
 
-func (m *Bool) Must(value ...Query) *Bool {
+func (b *Bool) Must(value ...Query) *Bool {
 	if len(value) > 0 {
-		m.must = append(m.must, value...)
-		m.mappings["must"] = m.must
+		b.must = append(b.must, value...)
+		b.mappings["must"] = b.must
 	}
-	return m
+	return b
 }
 
-func (m *Bool) Filter(value ...Query) *Bool {
+func (b *Bool) Filter(value ...Query) *Bool {
 	if len(value) > 0 {
-		m.filter = append(m.filter, value...)
-		m.mappings["filter"] = m.filter
+		b.filter = append(b.filter, value...)
+		b.mappings["filter"] = b.filter
 	}
-	return m
+	return b
 }
 
-func (m *Bool) Should(value ...Query) *Bool {
+func (b *Bool) Should(value ...Query) *Bool {
 	if len(value) > 0 {
-		m.should = append(m.should, value...)
-		m.mappings["should"] = m.should
+		b.should = append(b.should, value...)
+		b.mappings["should"] = b.should
 	}
-	return m
+	return b
 }
 
-func (m *Bool) ShouldNot(value ...Query) *Bool {
+func (b *Bool) ShouldNot(value ...Query) *Bool {
 	if len(value) > 0 {
-		m.shouldNot = append(m.shouldNot, value...)
-		m.mappings["should_not"] = m.shouldNot
+		b.shouldNot = append(b.shouldNot, value...)
+		b.mappings["should_not"] = b.shouldNot
 	}
-	return m
+	return b
 }
 
-func (m *Bool) Bytes() []byte {
-	data := map[string]map[string]interface{}{"bool": m.mappings}
-	bytes, _ := json.Marshal(data)
+func (b *Bool) Data() interface{} {
+	data := map[string]interface{}{"bool": b.mappings}
+	return data
+}
+
+func (b *Bool) Bytes() []byte {
+	bytes, _ := json.Marshal(b.Data())
 
 	return bytes
 }
 
-func (m *Bool) String() string {
-	return string(m.Bytes())
+func (b *Bool) String() string {
+	return string(b.Bytes())
 }

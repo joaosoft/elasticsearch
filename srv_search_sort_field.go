@@ -76,9 +76,13 @@ func (s *SortField) Script(value string) *SortField {
 	return s
 }
 
+func (s *SortField) Data() interface{} {
+	data := map[string]interface{}{s.field: s.mappings}
+	return data
+}
+
 func (s *SortField) Bytes() []byte {
-	data := map[string]map[string]interface{}{"Match": {s.field: s.mappings}}
-	bytes, _ := json.Marshal(data)
+	bytes, _ := json.Marshal(s.Data)
 
 	return bytes
 }
