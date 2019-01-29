@@ -15,7 +15,12 @@ func NewSort(fields ...*SortField) *Sort {
 }
 
 func (s *Sort) Data() interface{} {
-	data := map[string]interface{}{"sort": s.mappings}
+	data := make(map[string]interface{})
+
+	if len(s.mappings) > 0 {
+		data["sort"] =  s.mappings
+	}
+
 	return data
 }
 

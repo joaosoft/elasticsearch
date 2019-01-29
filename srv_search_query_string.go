@@ -6,12 +6,10 @@ type QueryString struct {
 	mappings map[string]interface{}
 }
 
-func NewQueryString(value interface{}) *QueryString {
+func NewQueryString(query interface{}) *QueryString {
 	new := &QueryString{
-		mappings: make(map[string]interface{}),
+		mappings: map[string]interface{}{"query": query},
 	}
-
-	new.mappings["value"] = value
 
 	return new
 }
@@ -123,11 +121,6 @@ func (q *QueryString) AllFields(value string) *QueryString {
 
 func (q *QueryString) TieBreaker(value string) *QueryString {
 	q.mappings["tie_breaker"] = value
-	return q
-}
-
-func (q *QueryString) Query(value string) *QueryString {
-	q.mappings["query"] = value
 	return q
 }
 

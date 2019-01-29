@@ -51,7 +51,12 @@ func (b *Bool) ShouldNot(value ...Query) *Bool {
 }
 
 func (b *Bool) Data() interface{} {
-	data := map[string]interface{}{"bool": b.mappings}
+	data := make(map[string]interface{})
+
+	if len(b.mappings) > 0 {
+		data["bool"] = b.mappings
+	}
+
 	return data
 }
 
