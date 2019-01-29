@@ -4,13 +4,10 @@ import "encoding/json"
 
 type QueryString struct {
 	mappings map[string]interface{}
-	field    string
 }
 
-func NewQueryString(field string, value interface{}) *QueryString {
-	new := &QueryString{
-		field: field,
-	}
+func NewQueryString(value interface{}) *QueryString {
+	new := &QueryString{}
 
 	new.mappings["value"] = value
 
