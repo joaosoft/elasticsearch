@@ -20,6 +20,7 @@ type Match struct {
 
 func NewMatch(field string, query string) *Match {
 	new := &Match{
+		mappings: make(map[string]interface{}),
 		field: field,
 	}
 

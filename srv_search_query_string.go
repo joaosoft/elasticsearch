@@ -7,7 +7,9 @@ type QueryString struct {
 }
 
 func NewQueryString(value interface{}) *QueryString {
-	new := &QueryString{}
+	new := &QueryString{
+		mappings: make(map[string]interface{}),
+	}
 
 	new.mappings["value"] = value
 

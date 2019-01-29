@@ -11,7 +11,9 @@ type Bool struct {
 }
 
 func NewBool() *Bool {
-	new := &Bool{}
+	new := &Bool{
+		mappings: make(map[string]interface{}),
+	}
 
 	return new
 }

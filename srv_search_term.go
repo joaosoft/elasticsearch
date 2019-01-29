@@ -9,6 +9,7 @@ type Term struct {
 
 func NewTerm(field string, value interface{}) *Term {
 	new := &Term{
+		mappings:make(map[string]interface{}),
 		field: field,
 	}
 
