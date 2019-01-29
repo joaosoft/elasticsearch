@@ -231,8 +231,7 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	body, _ := json.Marshal(e.body)
-	response, err := request.WithBody(body, web.ContentTypeApplicationJSON).Send()
+	response, err := request.WithBody(e.body, web.ContentTypeApplicationJSON).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
