@@ -12,7 +12,7 @@
   },
   "client": {
     "log": {
-      "level": "debug"
+      "level": "error"
     }
   }
 }

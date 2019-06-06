@@ -67,7 +67,12 @@ func main() {
 	bulkIndex()
 	bulkDelete()
 
+	// queue bulk create
+	fmt.Println(":: QUEUE BULK CREATE")
+	queueBulkCreate()
+
 	// index delete
 	fmt.Println(":: DELETE INDEX")
 	deleteIndex()
+
 }
