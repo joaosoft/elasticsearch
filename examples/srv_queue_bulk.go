@@ -15,7 +15,7 @@ func queueBulkCreate() {
 
 	// create queue
 	bulkWorkqueueConfig := manager.NewBulkWorkListConfig("queue_001", 100, 10, 2, time.Second*2, manager.FIFO)
-	bulkWorkqueue := pm.NewSimpleBulkWorkList(bulkWorkqueueConfig, bulkWorkHandler)
+	bulkWorkqueue := pm.NewSimpleBulkWorkList(bulkWorkqueueConfig, bulkWorkHandler, bulkWorkRecoverHandler, bulkWorkRecoverWastedRetriesHandler)
 	pm.AddWorkList("bulk_queue", bulkWorkqueue)
 
 	if err := bulkWorkqueue.Start(); err != nil {
@@ -59,5 +59,15 @@ func bulkWorkHandler(works []*manager.Work) error {
 		fmt.Printf("success with %+v", result)
 	}
 
+	return nil
+}
+
+func bulkWorkRecoverHandler(list manager.IList) error {
+	fmt.Printf("\nrecovering list with length %d", list.Size())
+	return nil
+}
+
+func bulkWorkRecoverWastedRetriesHandler(id string, data interface{}) error {
+	fmt.Printf("\nrecovering work with id: %s, data: %+v", id, data)
 	return nil
 }
