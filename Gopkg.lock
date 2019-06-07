@@ -89,11 +89,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:d8cf2533a5d9be250afae2db2acd5eebeef537938e593ac247549acd7db8c33e"
+  digest = "1:c6477ef0152440ce4a42cc74e81f86920b8dd32576bc41576c7b6d4d6c568a7a"
   name = "github.com/joaosoft/manager"
   packages = ["."]
   pruneopts = "UT"
-  revision = "1ebf82ff33d2c5713e8025da2a59ea89375fde37"
+  revision = "206cc555f47c0c8dc99b713d5ef9878dd15a1117"
 
 [[projects]]
   branch = "master"
@@ -322,8 +322,8 @@
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "4c25cacc810c02874000e4f7071286a8e96b2515"
-  version = "v1.6.0"
+  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
