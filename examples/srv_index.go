@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-
-	log "github.com/joaosoft/logger"
 )
 
 func createIndexWithMapping() {
@@ -34,7 +32,7 @@ func createIndexWithMapping() {
 `)).Create()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ncreated mapping for persons index ok: %t\n", response.Acknowledged)
 	}
@@ -45,7 +43,7 @@ func deleteIndex() {
 	response, err := client.Index().Index("persons").Delete()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleted persons index ok: %t\n", response.Acknowledged)
 	}
@@ -56,7 +54,7 @@ func existsIndex(index string) {
 	exists, err := client.Index().Index(index).Exists()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nexists index? %t\n", exists)
 	}

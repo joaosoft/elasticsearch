@@ -176,7 +176,6 @@ func (e *BulkService) Execute() (*BulkResponse, error) {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	fmt.Printf(e.buffer.String())
 	response, err := request.WithBody(e.buffer.Bytes(), web.ContentTypeApplicationJSON).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)

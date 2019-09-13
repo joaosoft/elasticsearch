@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	"os"
-
-	log "github.com/joaosoft/logger"
 )
 
 func countOnIndex(name string) int64 {
@@ -22,7 +20,7 @@ func countOnIndex(name string) int64 {
 		Count()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ncount persons with name %s: %d\n", name, response.Count)
 	}
@@ -43,7 +41,7 @@ func countOnDocument(name string) int64 {
 		Count()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ncount persons with name %s: %d\n", name, response.Count)
 	}

@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-
-	log "github.com/joaosoft/logger"
 )
 
 func bulkCreate() {
@@ -17,7 +15,7 @@ func bulkCreate() {
 	}).DoCreate()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nadding a new person with id %s\n", id)
 	}
@@ -29,18 +27,17 @@ func bulkCreate() {
 	}).DoCreate()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nadding a new person with id %s\n", id)
 	}
 
 	fmt.Println("executing bulk")
-	result, err := bulk.Execute()
+	_, err = bulk.Execute()
 	if err != nil {
-		log.Error(err)
-		fmt.Printf("%+v", result)
+		panic(err)
 	} else {
-		fmt.Printf("success with %+v", result)
+		fmt.Printf("success!")
 	}
 }
 
@@ -55,7 +52,7 @@ func bulkIndex() {
 	}).DoIndex()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nadding a new person with id %s\n", id)
 	}
@@ -67,18 +64,17 @@ func bulkIndex() {
 	}).DoCreate()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nadding a new person with id %s\n", id)
 	}
 
 	fmt.Println("executing bulk")
-	result, err := bulk.Execute()
+	_, err = bulk.Execute()
 	if err != nil {
-		log.Error(err)
-		fmt.Printf("%+v", result)
+		panic(err)
 	} else {
-		fmt.Printf("success with %+v", result)
+		fmt.Printf("success!")
 	}
 }
 
@@ -89,7 +85,7 @@ func bulkDelete() {
 	id := "1"
 	err := bulk.Index("persons").Type("person").Id(id).DoDelete()
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleting the person with id %s\n", id)
 	}
@@ -97,7 +93,7 @@ func bulkDelete() {
 	id = "2"
 	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleting the person with id %s\n", id)
 	}
@@ -106,7 +102,7 @@ func bulkDelete() {
 	id = "3"
 	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleting the person with id %s\n", id)
 	}
@@ -114,17 +110,16 @@ func bulkDelete() {
 	id = "4"
 	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleting the person with id %s\n", id)
 	}
 
 	fmt.Println("executing bulk")
-	result, err := bulk.Execute()
+	_, err = bulk.Execute()
 	if err != nil {
-		log.Error(err)
-		fmt.Printf("%+v", result)
+		panic(err)
 	} else {
-		fmt.Printf("success with %+v", result)
+		fmt.Printf("success!")
 	}
 }

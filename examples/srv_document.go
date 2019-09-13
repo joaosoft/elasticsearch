@@ -4,8 +4,6 @@ import (
 	"fmt"
 
 	"strconv"
-
-	log "github.com/joaosoft/logger"
 )
 
 func createDocumentWithId(id string) {
@@ -18,7 +16,7 @@ func createDocumentWithId(id string) {
 	}).Create()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ncreated a new person with id %s\n", response.ID)
 	}
@@ -33,7 +31,7 @@ func createDocumentWithoutId() string {
 	}).Create()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ncreated a new person with id %s\n", response.ID)
 	}
@@ -51,7 +49,7 @@ func updateDocumentWithId(id string) {
 	}).Update()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nupdated person with id %s\n", response.ID)
 	}
@@ -62,7 +60,7 @@ func deleteDocumentWithId(id string) {
 	response, err := client.Document().Index("persons").Type("person").Id(id).Delete()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\ndeleted person with id %s\n", response.ID)
 	}

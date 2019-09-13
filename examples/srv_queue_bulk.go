@@ -46,17 +46,16 @@ func bulkWorkHandler(works []*manager.Work) error {
 	var err error
 	for _, work := range works {
 		if err = bulk.Index("persons").Type("person").Id(work.Id).Body(work.Data).DoCreate(); err != nil {
-			log.Error(err)
+			panic(err)
 			return err
 		}
 	}
 
-	result, err := bulk.Execute()
+	_, err = bulk.Execute()
 	if err != nil {
-		log.Error(err)
-		fmt.Printf("%+v", result)
+		panic(err)
 	} else {
-		fmt.Printf("success with %+v", result)
+		fmt.Printf("success!")
 	}
 
 	return nil

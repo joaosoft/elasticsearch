@@ -59,6 +59,8 @@ func main() {
 
 	// document delete
 	fmt.Println(":: COUNT DOCUMENT WITH GENERATED ID")
+	deleteDocumentWithId("1")
+	deleteDocumentWithId("2")
 	deleteDocumentWithId(generatedId)
 
 	// bulk

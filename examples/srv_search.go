@@ -6,8 +6,6 @@ import (
 	"fmt"
 
 	"os"
-
-	log "github.com/joaosoft/logger"
 )
 
 func searchDocument(name string) {
@@ -17,7 +15,7 @@ func searchDocument(name string) {
 
 	// document search
 	dir, _ := os.Getwd()
-	err, _ := client.Search().
+	_, err := client.Search().
 		Index("persons").
 		Type("person").
 		Object(&data).
@@ -25,7 +23,7 @@ func searchDocument(name string) {
 		Search()
 
 	if err != nil {
-		log.Error(err)
+		panic(err)
 	} else {
 		fmt.Printf("\nsearch person by name:%s %+v\n", name, data)
 	}
