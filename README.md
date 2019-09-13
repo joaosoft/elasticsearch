@@ -4,10 +4,10 @@
 A simple and fast elastic-search client.
 
 ## Support for 
-> Index (Create / Exists / Delete)  [with or without mapping]
-> Document (Create / Update / Delete)
-> Search
-> Bulk (Index / Create / Update / Delete)
+* Index (Create / Exists / Delete)  [with or without mapping]
+* Document (Create / Update / Delete)
+* Search
+* Bulk (Index / Create / Update / Delete)
 
 * The search can be done with a template to be faster than other complicated frameworks.
 
@@ -141,6 +141,366 @@ func main() {
 	fmt.Println(":: DELETE INDEX")
 	deleteIndex()
 
+}
+
+func createIndexWithMapping() {
+	// you can define the configuration without having a configuration file
+	//client1 := elastic.NewElastic(elastic.WithConfiguration(elastic.NewConfig("http://localhost:9200")))
+
+	response, err := client.Index().Index("persons").Body([]byte(`
+{
+  "mappings": {
+    "person": {
+      "properties": {
+        "age": {
+          "type": "long"
+        },
+        "name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`)).Create()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ncreated mapping for persons index ok: %t\n", response.Acknowledged)
+	}
+}
+
+func deleteIndex() {
+
+	response, err := client.Index().Index("persons").Delete()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleted persons index ok: %t\n", response.Acknowledged)
+	}
+}
+
+func existsIndex(index string) {
+
+	exists, err := client.Index().Index(index).Exists()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nexists index? %t\n", exists)
+	}
+}
+
+func countOnIndex(name string) int64 {
+
+	d1 := elastic.CountTemplate{Data: map[string]interface{}{"name": name}}
+
+	// index count
+	dir, _ := os.Getwd()
+	response, err := client.Search().
+		Index("persons").
+		Template(dir+"/examples/templates", "get.example.count.template", &d1, false).
+		Count()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ncount persons with name %s: %d\n", name, response.Count)
+	}
+
+	return response.Count
+}
+
+func countOnDocument(name string) int64 {
+
+	d1 := elastic.CountTemplate{Data: map[string]interface{}{"name": name}}
+
+	// index count
+	dir, _ := os.Getwd()
+	response, err := client.Search().
+		Index("persons").
+		Type("person").
+		Template(dir+"/examples/templates", "get.example.count.template", &d1, false).
+		Count()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ncount persons with name %s: %d\n", name, response.Count)
+	}
+
+	return response.Count
+}
+
+func createDocumentWithId(id string) {
+
+	// document create with id
+	age, _ := strconv.Atoi(id)
+	response, err := client.Document().Index("persons").Type("person").Id(id).Body(person{
+		Name: "joao",
+		Age:  age + 20,
+	}).Create()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ncreated a new person with id %s\n", response.ID)
+	}
+}
+
+func createDocumentWithoutId() string {
+
+	// document create without id
+	response, err := client.Document().Index("persons").Type("person").Body(person{
+		Name: "joao",
+		Age:  30,
+	}).Create()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ncreated a new person with id %s\n", response.ID)
+	}
+
+	return response.ID
+}
+
+func updateDocumentWithId(id string) {
+
+	// document update with id
+	age, _ := strconv.Atoi(id)
+	response, err := client.Document().Index("persons").Type("person").Id(id).Body(person{
+		Name: "luis",
+		Age:  age + 20,
+	}).Update()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nupdated person with id %s\n", response.ID)
+	}
+}
+
+func deleteDocumentWithId(id string) {
+
+	response, err := client.Document().Index("persons").Type("person").Id(id).Delete()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleted person with id %s\n", response.ID)
+	}
+}
+
+func searchDocument(name string) {
+	var data []person
+
+	d1 := elastic.SearchTemplate{Data: map[string]interface{}{"name": name}}
+
+	// document search
+	dir, _ := os.Getwd()
+	_, err := client.Search().
+		Index("persons").
+		Type("person").
+		Object(&data).
+		Template(dir+"/examples/templates", "get.example.search.template", &d1, false).
+		Search()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nsearch person by name:%s %+v\n", name, data)
+	}
+}
+
+func bulkCreate() {
+	bulk := client.Bulk()
+
+	// document create with id
+	id := "1"
+	err := bulk.Index("persons").Type("person").Id(id).Body(person{
+		Name: "joao",
+		Age:  1,
+	}).DoCreate()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nadding a new person with id %s\n", id)
+	}
+
+	id = "2"
+	err = bulk.Index("persons").Type("person").Id(id).Body(person{
+		Name: "tiago",
+		Age:  2,
+	}).DoCreate()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nadding a new person with id %s\n", id)
+	}
+
+	fmt.Println("executing bulk")
+	_, err = bulk.Execute()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("success!")
+	}
+}
+
+func bulkIndex() {
+	bulk := client.Bulk()
+
+	// document create with id
+	id := "3"
+	err := bulk.Index("persons").Type("person").Id(id).Body(person{
+		Name: "joao",
+		Age:  1,
+	}).DoIndex()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nadding a new person with id %s\n", id)
+	}
+
+	id = "4"
+	err = bulk.Index("persons").Type("person").Id(id).Body(person{
+		Name: "tiago",
+		Age:  2,
+	}).DoCreate()
+
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\nadding a new person with id %s\n", id)
+	}
+
+	fmt.Println("executing bulk")
+	_, err = bulk.Execute()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("success!")
+	}
+}
+
+func bulkDelete() {
+	bulk := client.Bulk()
+
+	// document delete with id
+	id := "1"
+	err := bulk.Index("persons").Type("person").Id(id).DoDelete()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleting the person with id %s\n", id)
+	}
+
+	id = "2"
+	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleting the person with id %s\n", id)
+	}
+
+	// document delete with id
+	id = "3"
+	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleting the person with id %s\n", id)
+	}
+
+	id = "4"
+	err = bulk.Index("persons").Type("person").Id(id).DoDelete()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("\ndeleting the person with id %s\n", id)
+	}
+
+	fmt.Println("executing bulk")
+	_, err = bulk.Execute()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("success!")
+	}
+}
+
+func queueBulkCreate() {
+	// create process manager
+	pm := manager.NewManager(manager.WithRunInBackground(false))
+
+	// create queue
+	bulkWorkqueueConfig := manager.NewBulkWorkListConfig("queue_001", 100, 10, 2, time.Second*2, manager.FIFO)
+	bulkWorkqueue := pm.NewSimpleBulkWorkList(bulkWorkqueueConfig, bulkWorkHandler, bulkWorkRecoverHandler, bulkWorkRecoverWastedRetriesHandler)
+	pm.AddWorkList("bulk_queue", bulkWorkqueue)
+
+	if err := bulkWorkqueue.Start(); err != nil {
+		log.Errorf("MAIN: error starting bulk workqueue %s", err)
+	}
+
+	// add job to queue
+	go func() {
+		nJobs := 20000
+		for i := 1; i <= nJobs; i++ {
+			bulkWorkqueue.AddWork(strconv.Itoa(i),
+				&person{
+					Name: fmt.Sprintf("name %d", i),
+					Age:  i,
+				})
+		}
+	}()
+
+	<-time.After(30 * time.Second)
+}
+
+func bulkWorkHandler(works []*manager.Work) error {
+	log.Infof("handling works with length %d!", len(works))
+
+	bulk := client.Bulk()
+
+	// handle works on elastic bulk
+	var err error
+	for _, work := range works {
+		if err = bulk.Index("persons").Type("person").Id(work.Id).Body(work.Data).DoCreate(); err != nil {
+			panic(err)
+			return err
+		}
+	}
+
+	_, err = bulk.Execute()
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Printf("success!")
+	}
+
+	return nil
+}
+
+func bulkWorkRecoverHandler(list manager.IList) error {
+	fmt.Printf("\nrecovering list with length %d", list.Size())
+	return nil
+}
+
+func bulkWorkRecoverWastedRetriesHandler(id string, data interface{}) error {
+	fmt.Printf("\nrecovering work with id: %s, data: %+v", id, data)
+	return nil
 }
 ```
 
