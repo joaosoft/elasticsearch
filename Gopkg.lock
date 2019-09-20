@@ -89,19 +89,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:9380eb8a6cd2f0d7cff6baa747c343ab831d577ebaf2a9648079eaf6a5e6403c"
+  digest = "1:acfa2a204beec76c7442f16a3f5350afd6e1eb016a2204baeccd705e249aa06d"
   name = "github.com/joaosoft/manager"
   packages = ["."]
   pruneopts = "UT"
-  revision = "6661d52c45f3182a483d12ed6c7c3a072306b4b2"
+  revision = "e02d5a4947deea8caa640bf5371c4f0b27042a2c"
 
 [[projects]]
   branch = "master"
-  digest = "1:cae908d30212103c5cede7d97ebbf5d8cb4e4a414681774a77d19abc11a70931"
+  digest = "1:445f8cd17deeb419df2528d8c26b8f1c0e2bfdf99eb2924e743aac2e00ee787e"
   name = "github.com/joaosoft/web"
   packages = ["."]
   pruneopts = "UT"
-  revision = "cf92c794fc031ed9e809d02ef52eac9dcf37766a"
+  revision = "329cd986616e04760d4b9b32cde1da4752c615bc"
 
 [[projects]]
   branch = "master"
@@ -226,12 +226,12 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
+  digest = "1:524b71991fc7d9246cc7dc2d9e0886ccb97648091c63e30eef619e6862c955dd"
   name = "github.com/spf13/pflag"
   packages = ["."]
   pruneopts = "UT"
-  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
-  version = "v1.0.3"
+  revision = "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab"
+  version = "v1.0.5"
 
 [[projects]]
   digest = "1:11118bd196646c6515fea3d6c43f66162833c6ae4939bfb229b9956d91c6cf17"
@@ -282,15 +282,15 @@
   name = "golang.org/x/net"
   packages = ["idna"]
   pruneopts = "UT"
-  revision = "24e19bdeb0f2d062d8e2640d50a7aaf2a7f80e7a"
+  revision = "a8b05e9114ab0cb08faec337c959aed24b68bf50"
 
 [[projects]]
   branch = "master"
-  digest = "1:31ca8823684b4b0c204df1d4a9f3c511f41cc3e7ab6decc2ca5ffacc358d2818"
+  digest = "1:ec9d9815894f067c7878330735b9e4dfa6dc61234d2ba136b60a1436d6b5ea94"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "c3b328c6e5a763a2bfc82a48b4bd855037210934"
+  revision = "0c1ff786ef13daa914a3351c5e6b0321aed5960e"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"

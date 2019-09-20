@@ -171,12 +171,12 @@ func (e *BulkService) Execute() (*BulkResponse, error) {
 
 	e.buffer.WriteString("\n") // needs a blank line at the end
 
-	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint))
+	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	response, err := request.WithBody(e.buffer.Bytes(), web.ContentTypeApplicationJSON).Send()
+	response, err := request.WithBody(e.buffer.Bytes()).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}

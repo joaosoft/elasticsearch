@@ -83,12 +83,12 @@ func (e *DocumentService) execute(method web.Method) (*DocumentResponse, error) 
 		query += fmt.Sprintf("/%s", e.id)
 	}
 
-	request, err := e.client.Client.NewRequest(method, fmt.Sprintf("%s/%s/%s%s", e.client.config.Endpoint, e.index, e.typ, query))
+	request, err := e.client.Client.NewRequest(method, fmt.Sprintf("%s/%s/%s%s", e.client.config.Endpoint, e.index, e.typ, query), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	response, err := request.WithBody(e.body, web.ContentTypeApplicationJSON).Send()
+	response, err := request.WithBody(e.body).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}

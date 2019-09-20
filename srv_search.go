@@ -226,12 +226,12 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 		addSeparator = true
 	}
 
-	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, query))
+	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, query), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
 
-	response, err := request.WithBody(e.body, web.ContentTypeApplicationJSON).Send()
+	response, err := request.WithBody(e.body).Send()
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}
