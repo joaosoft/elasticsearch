@@ -18,10 +18,6 @@ func queueBulkCreate() {
 	bulkWorkqueue := pm.NewSimpleBulkWorkList(bulkWorkqueueConfig, bulkWorkHandler, bulkWorkRecoverHandler, bulkWorkRecoverWastedRetriesHandler)
 	pm.AddWorkList("bulk_queue", bulkWorkqueue)
 
-	if err := bulkWorkqueue.Start(); err != nil {
-		log.Errorf("MAIN: error starting bulk workqueue %s", err)
-	}
-
 	// add job to queue
 	go func() {
 		nJobs := 20000
@@ -33,6 +29,10 @@ func queueBulkCreate() {
 				})
 		}
 	}()
+
+	if err := bulkWorkqueue.Start(); err != nil {
+		log.Errorf("MAIN: error starting bulk workqueue %s", err)
+	}
 
 	<-time.After(30 * time.Second)
 }
