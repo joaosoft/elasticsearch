@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/joaosoft/errors"
@@ -63,8 +64,8 @@ type OnErrorDocumentNotFound struct {
 
 type SearchService struct {
 	client     *Elastic
-	index      string
-	typ        string
+	index      []string
+	typ        []string
 	id         string
 	queries    map[string]interface{}
 	template   []byte
@@ -87,12 +88,12 @@ func NewSearchService(client *Elastic) *SearchService {
 	}
 }
 
-func (e *SearchService) Index(index string) *SearchService {
+func (e *SearchService) Index(index ...string) *SearchService {
 	e.index = index
 	return e
 }
 
-func (e *SearchService) Type(typ string) *SearchService {
+func (e *SearchService) Type(typ ...string) *SearchService {
 	e.typ = typ
 	return e
 }
@@ -107,6 +108,13 @@ func (e *SearchService) Body(body []byte) *SearchService {
 	return e
 }
 
+func (e *SearchService) Data() *SearchService {
+	if len(e.index) > 1 || len(e.typ) > 1 {
+		e.queries["index"] = strings.Join(e.index, ",")
+		e.queries["type"] = strings.Join(e.typ, ",")
+	}
+	return e
+}
 func (e *SearchService) Query(queries ...Query) *SearchService {
 
 	for _, query := range queries {
@@ -193,8 +201,8 @@ func (e *SearchService) Search() (*SearchResponse, error) {
 
 func (e *SearchService) execute() (*SearchResponse, error) {
 
-	if len(e.queries) > 0 {
-		e.query["query"] = e.queries
+	if len(e.queries) > 0 || len(e.index) > 1 || len(e.typ) > 1 {
+		e.query["query"] = e.Data()
 		e.body, _ = json.Marshal(e.query)
 	} else if e.template != nil {
 		e.body = e.template
@@ -226,7 +234,7 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 		addSeparator = true
 	}
 
-	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, query), web.ContentTypeApplicationJSON, nil)
+	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index[0], query), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
 		return nil, errors.New(errors.ErrorLevel, 0, err)
 	}

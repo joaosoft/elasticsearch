@@ -12,7 +12,7 @@ type DocumentResponse struct {
 	Index   string `json:"_index"`
 	Type    string `json:"_type"`
 	ID      string `json:"_id"`
-	Version int64    `json:"_version"`
+	Version int64  `json:"_version"`
 	Result  string `json:"result"`
 	Shards  struct {
 		Total      int64 `json:"total"`
@@ -25,16 +25,26 @@ type DocumentResponse struct {
 }
 
 type DocumentService struct {
-	client *Elastic
-	index  string
-	typ    string
-	id     string
-	body   []byte
+	client     *Elastic
+	index      string
+	typ        string
+	id         string
+	body       []byte
+	parameters map[string]interface{}
 }
+
+type RefreshType string
+
+const (
+	Refresh   RefreshType = "true"
+	WaitFor   RefreshType = "wait_for"
+	NoRefresh RefreshType = "false"
+)
 
 func NewDocumentService(e *Elastic) *DocumentService {
 	return &DocumentService{
-		client: e,
+		client:     e,
+		parameters: make(map[string]interface{}),
 	}
 }
 
@@ -50,6 +60,11 @@ func (e *DocumentService) Type(typ string) *DocumentService {
 
 func (e *DocumentService) Id(id string) *DocumentService {
 	e.id = id
+	return e
+}
+
+func (e *DocumentService) Refresh(refreshType RefreshType) *DocumentService {
+	e.parameters["refresh"] = refreshType
 	return e
 }
 
@@ -81,6 +96,21 @@ func (e *DocumentService) execute(method web.Method) (*DocumentResponse, error) 
 
 	if e.id != "" {
 		query += fmt.Sprintf("/%s", e.id)
+	}
+
+	lenQ := len(e.parameters)
+	if lenQ > 0 {
+		query += "?"
+	}
+
+	addSeparator := false
+	for name, value := range e.parameters {
+		if addSeparator {
+			query += "&"
+		}
+
+		query += fmt.Sprintf("%s=%+v", name, value)
+		addSeparator = true
 	}
 
 	request, err := e.client.Client.NewRequest(method, fmt.Sprintf("%s/%s/%s%s", e.client.config.Endpoint, e.index, e.typ, query), web.ContentTypeApplicationJSON, nil)

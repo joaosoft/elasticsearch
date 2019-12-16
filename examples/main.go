@@ -13,7 +13,7 @@ type person struct {
 
 //var client = elastic.NewElastic()
 // you can define the configuration without having a configuration file
-var config, _, _ = elastic.NewConfig("localhost:9201")
+var config, _, _ = elastic.NewConfig("localhost:9200")
 var client, _ = elastic.NewElastic(elastic.WithConfiguration(config.Elastic))
 
 func main() {

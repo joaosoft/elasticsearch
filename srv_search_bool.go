@@ -4,10 +4,6 @@ import "encoding/json"
 
 type Bool struct {
 	mappings  map[string]interface{}
-	must      []Query
-	filter    []Query
-	should    []Query
-	shouldNot []Query
 }
 
 func NewBool() *Bool {
@@ -20,32 +16,28 @@ func NewBool() *Bool {
 
 func (b *Bool) Must(value ...Query) *Bool {
 	if len(value) > 0 {
-		b.must = append(b.must, value...)
-		b.mappings["must"] = b.must
+		b.mappings["must"] = append(b.mappings["must"].([]Query), value...)
+	}
+	return b
+}
+
+func (b *Bool) MustNot(value ...Query) *Bool {
+	if len(value) > 0 {
+		b.mappings["must_not"] = append(b.mappings["must_not"].([]Query), value...)
 	}
 	return b
 }
 
 func (b *Bool) Filter(value ...Query) *Bool {
 	if len(value) > 0 {
-		b.filter = append(b.filter, value...)
-		b.mappings["filter"] = b.filter
+		b.mappings["filter"] = append(b.mappings["filter"].([]Query), value...)
 	}
 	return b
 }
 
 func (b *Bool) Should(value ...Query) *Bool {
 	if len(value) > 0 {
-		b.should = append(b.should, value...)
-		b.mappings["should"] = b.should
-	}
-	return b
-}
-
-func (b *Bool) ShouldNot(value ...Query) *Bool {
-	if len(value) > 0 {
-		b.shouldNot = append(b.shouldNot, value...)
-		b.mappings["should_not"] = b.shouldNot
+		b.mappings["should"] = append(b.mappings["should"].([]Query), value...)
 	}
 	return b
 }
