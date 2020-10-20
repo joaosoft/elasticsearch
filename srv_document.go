@@ -115,17 +115,17 @@ func (e *DocumentService) execute(method web.Method) (*DocumentResponse, error) 
 
 	request, err := e.client.Client.NewRequest(method, fmt.Sprintf("%s/%s/%s%s", e.client.config.Endpoint, e.index, e.typ, query), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	response, err := request.WithBody(e.body).Send()
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	elasticResponse := DocumentResponse{}
 	if err = json.Unmarshal(response.Body, &elasticResponse); err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	return &elasticResponse, nil

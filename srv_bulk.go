@@ -173,21 +173,21 @@ func (e *BulkService) Execute() (*BulkResponse, error) {
 
 	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/_bulk", e.client.config.Endpoint), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	response, err := request.WithBody(e.buffer.Bytes()).Send()
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	elasticResponse := BulkResponse{}
 	if err = json.Unmarshal(response.Body, &elasticResponse); err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	if elasticResponse.Errors {
-		return &elasticResponse, errors.New(errors.ErrorLevel, 0, "error executing the request")
+		return &elasticResponse, errors.New(errors.LevelError, 0, "error executing the request")
 	}
 
 	return &elasticResponse, nil

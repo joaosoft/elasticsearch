@@ -71,12 +71,12 @@ func (e *IndexService) execute(method web.Method) (*IndexResponse, error) {
 
 	request, err := e.client.NewRequest(method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index, typ), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	response, err := request.WithBody(e.body).Send()
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	// unmarshal data
@@ -85,7 +85,7 @@ func (e *IndexService) execute(method web.Method) (*IndexResponse, error) {
 	if method != web.MethodHead {
 		err = json.Unmarshal(response.Body, &elasticResponse)
 		if err != nil {
-			return nil, errors.New(errors.ErrorLevel, 0, err)
+			return nil, errors.New(errors.LevelError, 0, err)
 		}
 	}
 

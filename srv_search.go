@@ -236,18 +236,18 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 
 	request, err := e.client.Client.NewRequest(e.method, fmt.Sprintf("%s/%s%s", e.client.config.Endpoint, e.index[0], query), web.ContentTypeApplicationJSON, nil)
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	response, err := request.WithBody(e.body).Send()
 	if err != nil {
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	elasticResponse := SearchResponse{}
 	if err := json.Unmarshal(response.Body, &elasticResponse); err != nil {
 		e.client.logger.Error(err)
-		return nil, errors.New(errors.ErrorLevel, 0, err)
+		return nil, errors.New(errors.LevelError, 0, err)
 	}
 
 	if elasticResponse.OnError != nil {
@@ -262,11 +262,11 @@ func (e *SearchService) execute() (*SearchResponse, error) {
 
 		arrayHits, err := json.Marshal(rawHits)
 		if err != nil {
-			return nil, errors.New(errors.ErrorLevel, 0, err)
+			return nil, errors.New(errors.LevelError, 0, err)
 		}
 
 		if err := json.Unmarshal(arrayHits, e.object); err != nil {
-			return nil, errors.New(errors.ErrorLevel, 0, err)
+			return nil, errors.New(errors.LevelError, 0, err)
 		}
 	}
 
