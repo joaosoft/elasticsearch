@@ -1,5 +1,5 @@
 # elastic
-[![Build Status](https://travis-ci.org/joaosoft/elastic.svg?branch=master)](https://travis-ci.org/joaosoft/elastic) | [![codecov](https://codecov.io/gh/joaosoft/elastic/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/elastic) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/elastic)](https://goreportcard.com/report/github.com/joaosoft/elastic) | [![GoDoc](https://godoc.org/github.com/joaosoft/elastic?status.svg)](https://godoc.org/github.com/joaosoft/elastic)
+[![Build Status](https://travis-ci.org/joaosoft/elastic.svg?branch=master)](https://travis-ci.org/joaosoft/elastic) | [![codecov](https://codecov.io/gh/joaosoft/elastic/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/elastic) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/elasticsearch)](https://goreportcard.com/report/github.com/joaosoft/elasticsearch) | [![GoDoc](https://godoc.org/github.com/joaosoft/elasticsearch?status.svg)](https://godoc.org/github.com/joaosoft/elasticsearch)
 
 A simple and fast elastic-search client.
 
@@ -23,11 +23,11 @@ Project dependencies are managed using Dep. Read more about [Dep](https://github
 
 >### Go
 ```
-go get github.com/joaosoft/elastic
+go get github.com/joaosoft/elasticsearch
 ```
 
 ## Usage 
-This examples are available in the project at [elastic/examples](https://github.com/joaosoft/elastic/tree/master/examples)
+This examples are available in the project at [elastic/examples](https://github.com/joaosoft/elasticsearch/tree/master/examples)
 
 ### Templates
 #### get.example.1.template

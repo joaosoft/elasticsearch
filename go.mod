@@ -1,4 +1,4 @@
-module github.com/joaosoft/elastic
+module github.com/joaosoft/elasticsearch
 
 go 1.20
 

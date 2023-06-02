@@ -1,4 +1,4 @@
-package elastic
+package elasticsearch
 
 type OnError struct {
 	Error struct {

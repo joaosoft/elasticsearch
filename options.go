@@ -1,4 +1,4 @@
-package elastic
+package elasticsearch
 
 import (
 	logger "github.com/joaosoft/logger"

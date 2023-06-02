@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/joaosoft/elastic"
+	"github.com/joaosoft/elasticsearch"
 	"time"
 )
 
@@ -11,10 +11,10 @@ type person struct {
 	Age  int    `json:"age"`
 }
 
-//var client = elastic.NewElastic()
+// var client = elastic.NewElastic()
 // you can define the configuration without having a configuration file
-var config, _, _ = elastic.NewConfig("localhost:9200")
-var client, _ = elastic.NewElastic(elastic.WithConfiguration(config.Elastic))
+var config, _, _ = elasticsearch.NewConfig("localhost:9200")
+var client, _ = elasticsearch.NewElastic(elasticsearch.WithConfiguration(config.Elastic))
 
 func main() {
 

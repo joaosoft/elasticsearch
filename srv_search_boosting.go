@@ -1,9 +1,9 @@
-package elastic
+package elasticsearch
 
 import "encoding/json"
 
 type Boosting struct {
-	mappings      map[string]interface{}
+	mappings map[string]interface{}
 }
 
 func NewBoosting() *Boosting {

@@ -1,4 +1,4 @@
-package elastic
+package elasticsearch
 
 import "encoding/json"
 
@@ -18,7 +18,7 @@ func (s *Sort) Data() interface{} {
 	data := make(map[string]interface{})
 
 	if len(s.mappings) > 0 {
-		data["sort"] =  s.mappings
+		data["sort"] = s.mappings
 	}
 
 	return data
