@@ -1,7 +1,7 @@
 package main
 
 import (
-	"elastic"
+	"github.com/joaosoft/elasticsearch"
 
 	"fmt"
 
@@ -10,7 +10,7 @@ import (
 
 func countOnIndex(name string) int64 {
 
-	d1 := elastic.CountTemplate{Data: map[string]interface{}{"name": name}}
+	d1 := elasticsearch.CountTemplate{Data: map[string]interface{}{"name": name}}
 
 	// index count
 	dir, _ := os.Getwd()
@@ -30,7 +30,7 @@ func countOnIndex(name string) int64 {
 
 func countOnDocument(name string) int64 {
 
-	d1 := elastic.CountTemplate{Data: map[string]interface{}{"name": name}}
+	d1 := elasticsearch.CountTemplate{Data: map[string]interface{}{"name": name}}
 
 	// index count
 	dir, _ := os.Getwd()

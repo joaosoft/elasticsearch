@@ -1,7 +1,7 @@
 package main
 
 import (
-	"elastic"
+	"github.com/joaosoft/elasticsearch"
 
 	"fmt"
 
@@ -11,7 +11,7 @@ import (
 func searchDocument(name string) {
 	var data []person
 
-	d1 := elastic.SearchTemplate{Data: map[string]interface{}{"name": name}}
+	d1 := elasticsearch.SearchTemplate{Data: map[string]interface{}{"name": name}}
 
 	// document search
 	dir, _ := os.Getwd()
